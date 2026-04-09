@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kao | 陰陽師的WEB伴走者</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Antique&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1612;
+    --washi: #f5f0e8;
+    --sand: #e8dfc8;
+    --gold: #b8963e;
+    --gold-light: #d4af6a;
+    --moss: #4a5240;
+    --mist: #8c9188;
+    --rouge: #8b3a3a;
+    --paper: #faf7f0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Shippori Mincho', serif;
+    line-height: 1.9;
+    overflow-x: hidden;
+  }
+
+  /* ── 和紙テクスチャ背景 ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(250, 247, 240, 0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(184, 150, 62, 0.2);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  nav a {
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    color: var(--mist);
+    transition: color 0.3s;
+  }
+
+  nav a:hover { color: var(--gold); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 6rem 2rem 4rem;
+    overflow: hidden;
+  }
+
+  .hero-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-bg-circle:nth-child(1) {
+    width: 600px; height: 600px;
+    border: 1px solid rgba(184, 150, 62, 0.12);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 8s ease-in-out infinite;
+  }
+
+  .hero-bg-circle:nth-child(2) {
+    width: 400px; height: 400px;
+    border: 1px solid rgba(184, 150, 62, 0.18);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 8s ease-in-out infinite 1s;
+  }
+
+  .hero-bg-circle:nth-child(3) {
+    width: 200px; height: 200px;
+    border: 1px solid rgba(184, 150, 62, 0.25);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 8s ease-in-out infinite 2s;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.03); }
+  }
+
+  /* 陰陽マーク風 装飾 */
+  .yin-yang {
+    position: absolute;
+    top: 12%; right: 8%;
+    width: 80px; height: 80px;
+    opacity: 0.08;
+    animation: spin 40s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hero-inner {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+  }
+
+  .hero-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    display: block;
+    animation: fadeUp 1s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Zen Antique', serif;
+    font-size: clamp(2rem, 6vw, 3.6rem);
+    line-height: 1.4;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    animation: fadeUp 1s ease both 0.2s;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 0.9rem;
+    color: var(--mist);
+    letter-spacing: 0.1em;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 1s ease both 0.4s;
+  }
+
+  .hero-catch {
+    font-size: 1rem;
+    line-height: 2;
+    color: var(--ink);
+    margin-bottom: 3rem;
+    animation: fadeUp 1s ease both 0.6s;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 0.9rem 3rem;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 1s ease both 0.8s;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
+
+  .btn-primary:hover { color: var(--paper); }
+  .btn-primary:hover::before { transform: scaleX(1); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 auto 3rem;
+    max-width: 300px;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-light));
+  }
+
+  .divider::after { background: linear-gradient(to left, transparent, var(--gold-light)); }
+
+  .divider span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+  }
+
+  /* ── SECTIONS COMMON ── */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-family: 'Zen Antique', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 400;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    background: var(--washi);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 640px) {
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  .about-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .about-circle-wrap {
+    position: relative;
+    width: 200px;
+    height: 200px;
+  }
+
+  .about-circle-outer {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(184, 150, 62, 0.3);
+    animation: pulse 6s ease-in-out infinite;
+  }
+
+  .about-circle-inner {
+    position: absolute;
+    inset: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sand), var(--washi));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .about-kanji {
+    font-family: 'Zen Antique', serif;
+    font-size: 3rem;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  .about-text p {
+    font-size: 0.95rem;
+    line-height: 2.1;
+    color: var(--ink);
+    margin-bottom: 1.2rem;
+  }
+
+  .about-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .tag {
+    padding: 0.25rem 0.9rem;
+    border: 1px solid rgba(184, 150, 62, 0.4);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    border-radius: 2px;
+  }
+
+  /* ── CONCEPT ── */
+  #concept {
+    background: var(--ink);
+    color: var(--washi);
+  }
+
+  #concept .section-title { color: var(--washi); }
+
+  .concept-quote {
+    margin: 3rem auto;
+    max-width: 600px;
+    text-align: center;
+    position: relative;
+    padding: 2.5rem;
+  }
+
+  .concept-quote::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-top: 1px solid rgba(184, 150, 62, 0.4);
+    border-bottom: 1px solid rgba(184, 150, 62, 0.4);
+  }
+
+  .concept-quote p {
+    font-family: 'Zen Antique', serif;
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    line-height: 2;
+    letter-spacing: 0.08em;
+    color: var(--gold-light);
+  }
+
+  .concept-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 640px) {
+    .concept-grid { grid-template-columns: 1fr; }
+  }
+
+  .concept-card {
+    padding: 2rem;
+    border: 1px solid rgba(184, 150, 62, 0.2);
+    position: relative;
+  }
+
+  .concept-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px; height: 100%;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+
+  .concept-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+    font-style: italic;
+  }
+
+  .concept-card-jp {
+    font-size: 0.8rem;
+    color: var(--mist);
+    letter-spacing: 0.15em;
+    margin-bottom: 1rem;
+  }
+
+  .concept-card p {
+    font-size: 0.88rem;
+    line-height: 2;
+    color: rgba(245, 240, 232, 0.75);
+  }
+
+  /* ── SERVICE ── */
+  #service { background: var(--paper); }
+
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 720px) {
+    .service-grid { grid-template-columns: 1fr; }
+  }
+
+  .service-card {
+    padding: 2.5rem 2rem;
+    background: var(--washi);
+    border-bottom: 2px solid var(--gold);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(26, 22, 18, 0.08);
+  }
+
+  .service-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    color: rgba(184, 150, 62, 0.2);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .service-card h3 {
+    font-family: 'Zen Antique', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .service-card p {
+    font-size: 0.85rem;
+    line-height: 2;
+    color: var(--mist);
+  }
+
+  /* ── PHILOSOPHY ── */
+  #philosophy {
+    background: var(--sand);
+  }
+
+  .phil-list {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .phil-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 2rem;
+    align-items: start;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(184, 150, 62, 0.2);
+  }
+
+  .phil-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+  @media (max-width: 640px) {
+    .phil-item { grid-template-columns: 1fr; gap: 0.5rem; }
+  }
+
+  .phil-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    padding-top: 0.25rem;
+    font-style: italic;
+  }
+
+  .phil-title {
+    font-family: 'Zen Antique', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+
+  .phil-body {
+    font-size: 0.88rem;
+    line-height: 2.1;
+    color: var(--moss);
+  }
+
+  /* ── WORKS ── */
+  #works { background: var(--washi); }
+
+  .works-cta {
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .works-cta p {
+    font-size: 0.9rem;
+    color: var(--mist);
+    margin-bottom: 2rem;
+    line-height: 2;
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--ink);
+    color: var(--washi);
+    text-align: center;
+  }
+
+  #contact .section-label { color: rgba(184, 150, 62, 0.8); }
+  #contact .section-title { color: var(--washi); }
+
+  .contact-lead {
+    font-size: 0.95rem;
+    line-height: 2.1;
+    color: rgba(245, 240, 232, 0.7);
+    max-width: 500px;
+    margin: 1.5rem auto 3rem;
+  }
+
+  .contact-form {
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    background: rgba(245, 240, 232, 0.06);
+    border: 1px solid rgba(184, 150, 62, 0.3);
+    padding: 0.8rem 1rem;
+    color: var(--washi);
+    font-family: 'Shippori Mincho', serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: var(--gold);
+  }
+
+  .form-group textarea { height: 120px; resize: vertical; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Shippori Mincho', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    cursor: pointer;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
+
+  .btn-submit:hover { color: var(--ink); }
+  .btn-submit:hover::before { transform: scaleX(1); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #0f0c09;
+    color: rgba(245, 240, 232, 0.35);
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+  }
+
+  footer a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 縦線装飾 */
+  .vertical-text {
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: rgba(184, 150, 62, 0.35);
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Emojaponnaise</a>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#service">Service</a></li>
+    <li><a href="#philosophy">Philosophy</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-circle"></div>
+  <div class="hero-bg-circle"></div>
+  <div class="hero-bg-circle"></div>
+
+  <svg class="yin-yang" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="48" fill="none" stroke="#b8963e" stroke-width="1.5"/>
+    <path d="M50,2 A48,48 0 0,1 50,98 A24,24 0 0,1 50,50 A24,24 0 0,0 50,2 Z" fill="#b8963e"/>
+    <circle cx="50" cy="26" r="6" fill="#f5f0e8"/>
+    <circle cx="50" cy="74" r="6" fill="#b8963e"/>
+  </svg>
+
+  <div class="hero-inner">
+    <span class="hero-en">Onmyoji-style WEB Companion</span>
+    <h1 class="hero-title">
+      見えない力と<br><em>見える技術</em>で<br>あなたのサイトを紡ぐ
+    </h1>
+    <p class="hero-sub">陰陽師的WEB伴走者 ― Kao</p>
+    <p class="hero-catch">
+      WEB制作と占いを組み合わせた、<br>
+      ちょっとめずらしい「伴走者」がいます。
+    </p>
+    <a href="#contact" class="btn-primary">ご縁を結ぶ</a>
+  </div>
+
+  <span class="vertical-text">SCROLL DOWN ↓</span>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">About</span>
+      <h2 class="section-title">陰陽師的WEB伴走者とは</h2>
+      <div class="divider"><span>✦</span></div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="about-circle-wrap">
+          <div class="about-circle-outer"></div>
+          <div class="about-circle-inner">
+            <span class="about-kanji">伴</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-text reveal">
+        <p>
+          はじめまして、Kaoです。<br>
+          WEB制作と占いを学びながら、<strong>「見えない力と見える技術」</strong>を
+          組み合わせた、ちょっとめずらしい存在を目指しています。
+        </p>
+        <p>
+          サイトをつくるだけでなく、あなたの想いや方向性を
+          一緒に読み解きながら伴走できる——そんなWEB制作者でありたいと、
+          日々精進中です♪
+        </p>
+        <div class="about-tags">
+          <span class="tag">WEB制作</span>
+          <span class="tag">占い</span>
+          <span class="tag">陰陽師的WEB伴走</span>
+          <span class="tag">余白・黄金比デザイン</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section id="concept">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Concept</span>
+      <h2 class="section-title">見えないものを、見えるかたちに</h2>
+      <div class="divider"><span>✦</span></div>
+    </div>
+
+    <div class="concept-quote reveal">
+      <p>
+        あなたの物語を、一緒にデザインします。<br>
+        <em style="font-family:'Cormorant Garamond',serif; font-size:0.9em; color:rgba(212,175,106,0.7);">
+          Listening, imagining, and creating together.
+        </em>
+      </p>
+    </div>
+
+    <div class="concept-grid">
+      <div class="concept-card reveal">
+        <div class="concept-card-title">Invisible Force</div>
+        <div class="concept-card-jp">見えない力</div>
+        <p>
+          占いが読み解くのは、言葉にならない想いや、
+          まだ気づいていない方向性。あなたの「本質」を
+          丁寧にヒアリングし、サイトの指針とします。
+        </p>
+      </div>
+      <div class="concept-card reveal">
+        <div class="concept-card-title">Visible Craft</div>
+        <div class="concept-card-jp">見える技術</div>
+        <p>
+          余白・黄金比・見えない動線。気づいたらスクロールしていた、
+          なんとなくクリックしたくなる——
+          訪れた人の心がそっと動くサイトを実装します。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICE -->
+<section id="service">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Service</span>
+      <h2 class="section-title">できること</h2>
+      <div class="divider"><span>✦</span></div>
+    </div>
+
+    <div class="service-grid">
+      <div class="service-card reveal">
+        <div class="service-num">01</div>
+        <h3>WEBデザイン</h3>
+        <p>目的や世界観を丁寧にヒアリングし、"伝わる"デザインを一緒に仕上げます。余白と黄金比を意識した、見えない動線のあるデザイン。</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">02</div>
+        <h3>コーディング</h3>
+        <p>デザインを正確かつ軽量に実装。アクセシビリティを意識して仕上げます。HTML / CSS / JavaScript / WordPress対応。</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-num">03</div>
+        <h3>占い×WEB相談</h3>
+        <p>サイトの方向性に迷ったとき、占いの視点からあなたの想いや強みを一緒に読み解きます。陰陽師的な伴走サービス。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section id="philosophy">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Design Philosophy</span>
+      <h2 class="section-title">デザインへのこだわり</h2>
+      <div class="divider"><span>✦</span></div>
+    </div>
+
+    <div class="phil-list">
+      <div class="phil-item reveal">
+        <div class="phil-en">Ma / Negative Space</div>
+        <div>
+          <div class="phil-title">余白という「間」</div>
+          <div class="phil-body">詰め込みすぎない。「間」が呼吸をつくり、大切なものが際立つ。余白は単なる空白ではなく、意図を持ったデザインの一部です。</div>
+        </div>
+      </div>
+      <div class="phil-item reveal">
+        <div class="phil-en">Golden Ratio</div>
+        <div>
+          <div class="phil-title">黄金比という「流れ」</div>
+          <div class="phil-body">自然界に宿る美しい比率。見た人が「なんとなく心地いい」と感じる配置の裏には、数学的な調和があります。</div>
+        </div>
+      </div>
+      <div class="phil-item reveal">
+        <div class="phil-en">Invisible Path</div>
+        <div>
+          <div class="phil-title">見えない動線</div>
+          <div class="phil-body">「気づいたらクリックしていた」——そんな体験を設計します。押しつけない、でも自然と次へ誘う。見えない道標がサイトの中に潜んでいます。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section id="works">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Works</span>
+      <h2 class="section-title">制作実績</h2>
+      <div class="divider"><span>✦</span></div>
+    </div>
+    <div class="works-cta">
+      <p class="reveal">
+        これまでの制作物はポートフォリオサイトでご覧いただけます。<br>
+        デザイン・コーディング、さまざまな作品を掲載しています。
+      </p>
+      <a href="https://www.emojaponnaise.com/#works" target="_blank" class="btn-primary reveal">
+        作品を見る → emojaponnaise.com
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Contact</span>
+      <h2 class="section-title">ご縁を結ぶ</h2>
+      <div class="divider"><span>✦</span></div>
+    </div>
+    <p class="contact-lead reveal">
+      サイト制作のご相談、占いとWEBを組み合わせた伴走サービス、
+      どんな小さなことでもお気軽にご連絡ください。
+    </p>
+
+    <form class="contact-form reveal" onsubmit="return false;">
+      <div class="form-group">
+        <label>お名前</label>
+        <input type="text" placeholder="山田 花子">
+      </div>
+      <div class="form-group">
+        <label>メールアドレス</label>
+        <input type="email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>ご相談内容</label>
+        <textarea placeholder="どんなサイトを作りたいか、悩んでいることなど、なんでもどうぞ。"></textarea>
+      </div>
+      <button type="submit" class="btn-submit">送 信 す る</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© Emojaponnaise — Kao | <a href="https://www.emojaponnaise.com/">portfolio</a></p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
