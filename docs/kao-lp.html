@@ -263,6 +263,7 @@
     display: block;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
+    text-align: center;
   }
 
   .section-title {
@@ -271,6 +272,7 @@
     font-weight: 400;
     margin-bottom: 1rem;
     letter-spacing: 0.05em;
+    text-align: center;
   }
 
   /* ── ABOUT ── */
@@ -672,7 +674,7 @@
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">Emojaponnaise</a>
+  <a href="https://www.emojaponnaise.com/" target="_blank" class="nav-logo">Emojaponnaise</a>
   <ul>
     <li><a href="#about">About</a></li>
     <li><a href="#service">Service</a></li>
@@ -697,14 +699,14 @@
   <div class="hero-inner">
     <span class="hero-en">Onmyoji-style WEB Companion</span>
     <h1 class="hero-title">
-      星を経済に、感覚を言葉に、技術を人に。<br><em>見えないものと見えるものを繋ぐ</em><br>翻訳者。
+      見えない力と<br><em>見える技術</em>で<br>あなたのサイトを紡ぐ
     </h1>
     <p class="hero-sub">陰陽師的WEB伴走者 ― Kao</p>
     <p class="hero-catch">
       WEB制作と占いを組み合わせた、<br>
       ちょっとめずらしい「伴走者」がいます。
     </p>
-    <a href="#contact" class="btn-primary">ご縁を結ぶ</a>
+    <a href="https://www.emojaponnaise.com/#contact" target="_blank" class="btn-primary">ご縁を結ぶ</a>
   </div>
 
   <span class="vertical-text">SCROLL DOWN ↓</span>
@@ -889,18 +891,18 @@
       どんな小さなことでもお気軽にご連絡ください。
     </p>
 
-    <form class="contact-form reveal" onsubmit="return false;">
+    <form class="contact-form reveal" action="https://formspree.io/f/mnjlpjja" method="POST">
       <div class="form-group">
         <label>お名前</label>
-        <input type="text" placeholder="山田 花子">
+        <input type="text" name="name" placeholder="山田 花子" required>
       </div>
       <div class="form-group">
         <label>メールアドレス</label>
-        <input type="email" placeholder="your@email.com">
+        <input type="email" name="email" placeholder="your@email.com" required>
       </div>
       <div class="form-group">
         <label>ご相談内容</label>
-        <textarea placeholder="どんなサイトを作りたいか、悩んでいることなど、なんでもどうぞ。"></textarea>
+        <textarea name="message" placeholder="どんなサイトを作りたいか、悩んでいることなど、なんでもどうぞ。"></textarea>
       </div>
       <button type="submit" class="btn-submit">送 信 す る</button>
     </form>
